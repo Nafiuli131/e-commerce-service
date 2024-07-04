@@ -1,5 +1,6 @@
 package com.example.e_commerce_service.controller;
 
+import com.example.e_commerce_service.dto.DateRangeRequest;
 import com.example.e_commerce_service.dto.TopSellingItemDTO;
 import com.example.e_commerce_service.dto.WishListItemDTO;
 import com.example.e_commerce_service.entity.Item;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,11 +37,9 @@ public class ECommerceController {
         return ResponseEntity.ok(totalSaleAmount);
     }
 
-    @GetMapping("/maxsaleday")
-    public ResponseEntity<LocalDate> getMaxSaleDay(
-            @RequestParam(name = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(name = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        LocalDate maxSaleDay = eCommerceService.getMaxSaleDay(startDate, endDate);
+    @PostMapping("/maxsaleday")
+    public ResponseEntity<LocalDate> getMaxSaleDay(@RequestBody DateRangeRequest dateRangeRequest) {
+        LocalDate maxSaleDay = eCommerceService.getMaxSaleDay(dateRangeRequest.getStartDate(), dateRangeRequest.getEndDate());
         return ResponseEntity.ok(maxSaleDay);
     }
 
@@ -52,7 +52,7 @@ public class ECommerceController {
 
     @GetMapping("/topselling/lastmonth")
     public ResponseEntity<?> getTopSellingItemsLastMonth() {
-        List<Item> topSellingItems = eCommerceService.getTopSellingItemsLastMonth();
+        List<TopSellingItemDTO> topSellingItems = eCommerceService.getTopSellingItemsLastMonth();
         return ResponseEntity.ok(topSellingItems);
     }
 }

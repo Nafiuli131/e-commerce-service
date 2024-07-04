@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TopSellingItemDTO {
-    private Long itemId;
-    private String name;
-    private String description;
-    private Double totalSaleAmount;
+public class DateRangeRequest {
 
+    private LocalDate startDate;
+    private LocalDate endDate;
 }

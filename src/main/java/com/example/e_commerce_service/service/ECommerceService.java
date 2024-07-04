@@ -4,6 +4,7 @@ import com.example.e_commerce_service.dto.WishListItemDTO;
 import com.example.e_commerce_service.entity.Item;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 public interface ECommerceService {
 
@@ -15,5 +16,5 @@ public interface ECommerceService {
 
     List<TopSellingItemDTO> getTopSellingItemsAllTime();
 
-    List<Item> getTopSellingItemsLastMonth();
+    List<TopSellingItemDTO> getTopSellingItemsLastMonth();
 }

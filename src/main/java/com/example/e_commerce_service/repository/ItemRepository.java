@@ -21,16 +21,23 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("SELECT COALESCE(SUM(s.saleAmount), 0) FROM Sale s WHERE DATE(s.saleDate) = CURRENT_DATE")
     Double calculateTotalSaleAmountCurrentDay();
 
-    @Query("SELECT MAX(s.saleDate) FROM Sale s WHERE s.saleDate BETWEEN :startDate AND :endDate")
-    LocalDate findMaxSaleDay(LocalDate startDate, LocalDate endDate);
 
     @Query("SELECT new com.example.e_commerce_service.dto.TopSellingItemDTO(s.item.id, " +
+            "s.item.name, " +
+            "s.item.description, " +
             "SUM(s.saleAmount)) " +
             "FROM Sale s " +
             "GROUP BY s.item.id " +
             "ORDER BY SUM(s.saleAmount) DESC")
     List<TopSellingItemDTO> findTopSellingItems();
-//
-//    @Query("SELECT i FROM Item i WHERE MONTH(i.saleDate) = MONTH(CURRENT_DATE) AND YEAR(i.saleDate) = YEAR(CURRENT_DATE) ORDER BY i.quantitySold DESC")
-//    List<Item> findTopSellingItemsLastMonth();
+
+    @Query("SELECT new com.example.e_commerce_service.dto.TopSellingItemDTO(s.item.id, " +
+            "s.item.name, " +
+            "s.item.description, " +
+            "SUM(s.saleAmount)) " +
+            "FROM Sale s " +
+            "WHERE MONTH(s.saleDate) = MONTH(CURRENT_DATE) AND YEAR(s.saleDate) = YEAR(CURRENT_DATE) " +
+            "GROUP BY s.item.id " +
+            "ORDER BY SUM(s.saleAmount) DESC")
+    List<TopSellingItemDTO> findTopSellingItemsLastMonth();
 }
