@@ -9,3 +9,60 @@ services:
       - spring.datasource.url=jdbc:mysql://host.docker.internal:3306/ecommerceDb
       - spring.datasource.username=root
       - spring.datasource.password=root123456
+    depends_on:
+      - mysql
+    links:
+      - mysql
+      - elasticsearch
+      - kibana
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    networks:
+      - elk_stack
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: ecommerceDb
+    ports:
+      - "3306:3306"
+    networks:
+      - elk_stack
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    networks:
+      - elk_stack
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.2
+    container_name: logstash
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+    ports:
+      - "5000:5000"
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+    networks:
+      - elk_stack
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    networks:
+      - elk_stack
+
+networks:
+  elk_stack:
+    driver: bridge
