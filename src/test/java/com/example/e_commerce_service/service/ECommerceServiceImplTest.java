@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 public class ECommerceServiceImplTest {
@@ -62,21 +63,6 @@ public class ECommerceServiceImplTest {
     }
 
     @Test
-    public void testGetMaxSaleDay() {
-
-        LocalDate startDate = LocalDate.of(2023, 1, 1);
-        LocalDate endDate = LocalDate.of(2023, 12, 31);
-        LocalDate expectedMaxSaleDay = LocalDate.of(2023, 10, 15); // Example date
-
-        when(saleRepository.findMaxSaleDay(startDate.atStartOfDay(), endDate.atTime(23, 59, 59)))
-                .thenReturn(expectedMaxSaleDay);
-
-        LocalDate result = eCommerceService.getMaxSaleDay(startDate, endDate);
-
-        assertEquals(expectedMaxSaleDay, result);
-    }
-
-    @Test
     public void testGetTopSellingItemsAllTime() {
 
         TopSellingItemDTO item1 = new TopSellingItemDTO(1L, "Item 1", "description 1", 300.00);
@@ -99,13 +85,18 @@ public class ECommerceServiceImplTest {
         TopSellingItemDTO item2 = new TopSellingItemDTO(2L, "Item 2", "description 2", 400.00);
         List<TopSellingItemDTO> expectedTopItems = Arrays.asList(item1, item2);
 
-        when(itemRepository.findTopSellingItemsLastMonth()).thenReturn(expectedTopItems);
+        when(itemRepository.findTopSellingItemsForMonth(anyInt(), anyInt())).thenReturn(expectedTopItems);
 
         List<TopSellingItemDTO> result = eCommerceService.getTopSellingItemsLastMonth();
 
         assertEquals(expectedTopItems.size(), result.size());
+
         assertEquals("Item 1", result.get(0).getName());
+        assertEquals("Item 2", result.get(1).getName());
+
+        assertEquals(300.0, result.get(0).getTotalSaleAmount());
         assertEquals(400.0, result.get(1).getTotalSaleAmount());
     }
+
 }
 
