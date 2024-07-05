@@ -63,6 +63,12 @@ public class ECommerceServiceImpl implements ECommerceService {
 
     @Override
     public List<TopSellingItemDTO> getTopSellingItemsLastMonth() {
-        return itemRepository.findTopSellingItemsLastMonth().stream().limit(5).collect(Collectors.toList());
+        LocalDate currentDate = LocalDate.now();
+        LocalDate lastMonthDate = currentDate.minusMonths(1);
+
+        int lastMonth = lastMonthDate.getMonthValue();
+        int lastMonthYear = lastMonthDate.getYear();
+
+        return itemRepository.findTopSellingItemsForMonth(lastMonth, lastMonthYear);
     }
 }
