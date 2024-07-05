@@ -7,6 +7,8 @@ import com.example.e_commerce_service.service.ECommerceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/ecommerce")
 public class ECommerceController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ECommerceController.class);
 
     private final ECommerceService eCommerceService;
 
@@ -32,6 +36,7 @@ public class ECommerceController {
     })
     @GetMapping("/wishlist/{customerId}")
     public ResponseEntity<?> getWishList(@PathVariable Long customerId) {
+        logger.info("Fetching wish list for customer with ID: {}", customerId);
         List<WishListItemDTO> wishList = eCommerceService.getWishList(customerId);
         return ResponseEntity.ok(wishList);
     }
@@ -42,6 +47,7 @@ public class ECommerceController {
     })
     @GetMapping("/totalsale/current")
     public ResponseEntity<?> getTotalSaleAmountCurrentDay() {
+        logger.info("Fetching total sale amount for the current day");
         Double totalSaleAmount = eCommerceService.getTotalSaleAmountCurrentDay();
         return ResponseEntity.ok(totalSaleAmount);
     }
@@ -53,6 +59,7 @@ public class ECommerceController {
     })
     @PostMapping("/maxsaleday")
     public ResponseEntity<LocalDate> getMaxSaleDay(@RequestBody DateRangeRequest dateRangeRequest) {
+        logger.info("Fetching maximum sale day for date range: {} to {}", dateRangeRequest.getStartDate(), dateRangeRequest.getEndDate());
         LocalDate maxSaleDay = eCommerceService.getMaxSaleDay(dateRangeRequest.getStartDate(), dateRangeRequest.getEndDate());
         return ResponseEntity.ok(maxSaleDay);
     }
@@ -63,6 +70,7 @@ public class ECommerceController {
     })
     @GetMapping("/topselling/alltime")
     public ResponseEntity<?> getTopSellingItemsAllTime() {
+        logger.info("Fetching top selling items of all time");
         List<TopSellingItemDTO> topSellingItems = eCommerceService.getTopSellingItemsAllTime();
         return ResponseEntity.ok(topSellingItems);
     }
@@ -73,6 +81,7 @@ public class ECommerceController {
     })
     @GetMapping("/topselling/lastmonth")
     public ResponseEntity<?> getTopSellingItemsLastMonth() {
+        logger.info("Fetching top selling items of the last month");
         List<TopSellingItemDTO> topSellingItems = eCommerceService.getTopSellingItemsLastMonth();
         return ResponseEntity.ok(topSellingItems);
     }
